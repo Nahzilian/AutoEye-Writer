@@ -88,7 +88,12 @@ class GoogleContentWithImage(GoogleContentObject):
         # This will become overall format
         super().build_content()
         formatted_img = self.image.html_format()
-        self.html_content = self.html_content.replace(f"</{self.tag}>", "") + formatted_img + f"</{self.tag}>"    
+        self.html_content = self.html_content.replace(f"</{self.tag}>", "") + formatted_img + f"</{self.tag}>"
+        if self.img_type == 'inline' and self.tag != 'div':            
+            self.html_content = self.html_content.replace(f"<{self.tag}", "<div>")
+            self.html_content = self.html_content.replace(f"</{self.tag}>", "</div>")
+
+
         
             
 
@@ -111,29 +116,41 @@ class GoogleDoc:
         self.extracted_data = []
     
     def get_obj_type(self, obj: dict):
-        if "positionedObjectIds" in obj:
-            id = obj.get("positionedObjectIds")
-            img_obj = self.position_obj.get(id)
-            return GoogleContentWithImage(obj, self.slug, img_obj, 'positioned', self.doc_size)
-        elif "sectionBreak" in obj:
+        if "sectionBreak" in obj:
+            # Remove section break from the list
             return None
         else:
-            ps = obj.get("paragraph").get("elements")
+            # Extract data from object
+            paragraph: dict = obj.get("paragraph")
+            elements: list = paragraph.get("elements")
+            
+            # Inline flags
             inline_exist = False
             inline_ref = {}
+            
+            # Positioned flag
+            position_exist = "positionedObjectIds" in paragraph
 
-            # This might not ref to inline_ref
-            for p in ps:
+            # Check if inlineObjectElement in p
+            # No fancy search algorithm!!! => List size is too small for that
+            for p in elements:
                 if "inlineObjectElement" in p:
                     inline_exist = True
                     inline_ref = p
                     break
+                    
             
             if inline_exist:
                 id = inline_ref.get("inlineObjectElement").get("inlineObjectId")
                 img_obj = self.inline_obj.get(id)
                 return GoogleContentWithImage(obj, self.slug, img_obj, 'inline', 'Need to filled in', self.doc_size)
-        
+            elif position_exist:
+                # Each paragraph should only be attached with 1 image only, hence the 0th index of the list 
+                id = paragraph.get("positionedObjectIds")[0]
+                img_obj = self.position_obj.get(id)
+
+                return GoogleContentWithImage(obj, self.slug, img_obj, 'positioned', 'Need to filled in', self.doc_size)
+
             else:
                 return GoogleContentObject(obj, self.slug, 'Need to filled in')
 

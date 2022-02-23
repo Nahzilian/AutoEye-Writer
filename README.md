@@ -19,9 +19,14 @@ Prod
                 -| small-asset-1.jpeg
 
 Some fixes:
-- Image position: Inline has unfinshed class string
-- Inline being wrapped in paragraph
+<!-- - Image position: Inline has unfinshed class string
+    - get_img_atr not finished   -->
+<!-- - Positioned img not downloaded
+    - get_obj_type missing for positioned -->
+<!-- - Inline being wrapped in paragraph -->
 - target atribute has some whitespace issue
 - Title should be used with different tag, so is Dek and by lines
 
 
+Features:
+Clean up special character in the content
