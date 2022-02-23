@@ -46,7 +46,7 @@ class Image:
         embedded_obj = obj_props.get('embeddedObject')
         self.id = img.get('objectId')
         name = f"{self.img_type}-{self.id}"
-        img_name = download(embedded_obj.get("imageProperties").get("contentUri"), name)
+        img_name = download(embedded_obj.get("imageProperties").get("contentUri"), name, file_slug)
 
         self.src= f"./assets/{file_slug}/{img_name}"
         

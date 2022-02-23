@@ -26,9 +26,10 @@ Some fixes:
 <!-- - Inline being wrapped in paragraph -->
 <!-- - target atribute has some whitespace issue -->
 <!-- - Title should be used with different tag, so is Dek and by lines -->
-- Download to the right folder
-- Fix write_to_html
+<!-- - Download to the right folder -->
+<!-- - Fix write_to_html -->
 
 
 Features:
-Clean up special character in the content
+<!-- Clean up special character in the content -->
+Proper format for html

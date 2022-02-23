@@ -1,5 +1,5 @@
 from modules.image import Image
-from .helper import html_font_class, convert_title_to_slug, html_change_wrapper_tag
+from .helper import html_font_class, convert_title_to_slug, html_change_wrapper_tag, sanitize_html_content
 
 class GoogleContentObject:
     """
@@ -59,7 +59,9 @@ class GoogleContentObject:
         for e in elements:
             text_run = e.get('textRun')
             if text_run:
-                content = self.style_content(text_run.get("textStyle"), text_run.get("content"))
+                sanitized = sanitize_html_content(text_run.get("content"))
+                print(sanitized)
+                content = self.style_content(text_run.get("textStyle"), sanitized)
                 main_content += content
         
         self.html_content = f"<{self.tag} class='{html_font_class(self.main_font)}'>{main_content}</{self.tag}>"
@@ -112,9 +114,11 @@ class GoogleDoc:
         self.slug = convert_title_to_slug(self.title)
         # List of GoogleContentObject
         
-        self.data_list = {"title": "", "dek": "", "by_lines": [], "main_content":"", "main_img": []}
-        # self.data_list = ''
+        self.data_obj = {"title": "", "dek": "", "by_lines": [], "main_content":"", "main_img": []}
+        # self.data_obj = ''
         self.extracted_data = []
+        self.template = ''
+        self.formatted_content = ''
     
     def get_obj_type(self, obj: dict):
         if "sectionBreak" in obj:
@@ -166,21 +170,22 @@ class GoogleDoc:
         self.extracted_data = data
         if len(data) < 7:
             raise IndexError("Data is too short to be extracted")
-        self.data_list['main_img'] = data[0].html_content
-        self.data_list['title'] = html_change_wrapper_tag("p","h1",data[1].html_content) 
-        self.data_list['dek'] = html_change_wrapper_tag("p","h2",data[2].html_content) 
-        self.data_list['by_lines'] = [ html_change_wrapper_tag("p","h4",x.html_content) for x in data[3:5]]
-        self.data_list['main_content'] = data[5:]
+        self.data_obj['main_img'] = data[0].html_content
+        self.data_obj['title'] = html_change_wrapper_tag("p","h1",data[1].html_content) 
+        self.data_obj['dek'] = html_change_wrapper_tag("p","h2",data[2].html_content) 
+        self.data_obj['by_lines'] = [ html_change_wrapper_tag("p","h4",x.html_content) for x in data[3:5]]
+        self.data_obj['main_content'] = data[5:]
     
+    def load_template(self, template: str):
+        self.template = template
+
     def format_with_template():
         pass
     
-    def write_to_html(self, path: str = ''):
-        print(self.data_list)
-        # for item in self.extracted_data:
-        #     # item.build_content()
-        #     print(item.html_content)
-        # f = open("assets/output.html", "w")
-        # f.write("FWERWERWERWER")
-        # f.close()
+    def write_to_html(self):
+        path = f'assets/prod/{self.slug}.html'
+        # print(self.data_obj)
+        f = open(path, "w")
+        f.write(self.formatted_content)
+        f.close()
 
