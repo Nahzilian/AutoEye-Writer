@@ -1,8 +1,8 @@
 import requests
 
 def convert_title_to_slug(title: str) -> str:
-    lower_cased = title.lower()
-    no_sp_char = ''.join(char for char in lower_cased if char.isalnum())
+    lower_cased = title.lower().replace(' ','-')
+    no_sp_char = ''.join(char for char in lower_cased if char.isalnum() or char == '-')
     return no_sp_char
 
 
@@ -13,7 +13,7 @@ def download(url, name) -> str:
     content_type = header.get('Content-Type')
     if not content_type:
         raise TypeError
-    file_name = name + content_type.replace('image/', '')
+    file_name = name + content_type.replace('image/', '.')
     open(file_name, 'wb').write(r.content)
     return file_name
 
