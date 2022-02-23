@@ -65,6 +65,6 @@ class Image:
     def html_format(self, is_target: bool = True) -> str:
         target = ''
         if is_target:
-            target = "target = 'blank'"
+            target = "target='blank'"
         return f"<img src='{self.src}' alt='{self.slug}' class='float-{self.pos}' {target}>"
         

@@ -7,7 +7,7 @@ Prod
     -| stylesheets
         -| index.css
         -| article.css
-    -| script
+    -| scripts
         -| animation.js
         -| index.js
     -| assets
@@ -24,8 +24,10 @@ Some fixes:
 <!-- - Positioned img not downloaded
     - get_obj_type missing for positioned -->
 <!-- - Inline being wrapped in paragraph -->
-- target atribute has some whitespace issue
-- Title should be used with different tag, so is Dek and by lines
+<!-- - target atribute has some whitespace issue -->
+<!-- - Title should be used with different tag, so is Dek and by lines -->
+- Download to the right folder
+- Fix write_to_html
 
 
 Features:

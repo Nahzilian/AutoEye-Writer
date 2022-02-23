@@ -20,3 +20,9 @@ def download(url, name) -> str:
 def html_font_class(font_name: str):
     font = "-".join(font_name.lower().strip().split(' '))
     return f"text-font-{font}"
+
+
+def html_change_wrapper_tag(target: str, new_tag: str, line: str):
+    new_line = line.replace(f"<{target}", f"<{new_tag}")
+    new_line = new_line.replace(f"</{target}>", f"</{new_tag}>")
+    return new_line
