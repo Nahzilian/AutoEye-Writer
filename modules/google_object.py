@@ -1,5 +1,6 @@
+from .template import Template
 from modules.image import Image
-from .helper import html_font_class, convert_title_to_slug, html_change_wrapper_tag, sanitize_html_content
+from .helper import html_font_class, convert_title_to_slug, html_change_wrapper_tag, sanitize_html_content, extract_content_from_tag
 
 class GoogleContentObject:
     """
@@ -58,13 +59,18 @@ class GoogleContentObject:
 
         for e in elements:
             text_run = e.get('textRun')
-            if text_run:
+            
+            if text_run and text_run['content'] != '\n' and text_run['content'] != '':
+                # print(text_run)
                 sanitized = sanitize_html_content(text_run.get("content"))
-                print(sanitized)
                 content = self.style_content(text_run.get("textStyle"), sanitized)
                 main_content += content
-        
-        self.html_content = f"<{self.tag} class='{html_font_class(self.main_font)}'>{main_content}</{self.tag}>"
+            else:
+                continue
+        if main_content != '':
+            self.html_content = f"<{self.tag} class='{html_font_class(self.main_font)} gs_reveal'>{main_content}</{self.tag}>"
+        else: 
+            self.html_content = None
 
 
 class GoogleContentWithImage(GoogleContentObject):
@@ -90,6 +96,8 @@ class GoogleContentWithImage(GoogleContentObject):
         # This will become overall format
         super().build_content()
         formatted_img = self.image.html_format()
+        if self.html_content == None:
+            self.html_content = ''
         self.html_content = self.html_content.replace(f"</{self.tag}>", "") + formatted_img + f"</{self.tag}>"
         if self.img_type == 'inline' and self.tag != 'div':            
             self.html_content = html_change_wrapper_tag(self.tag, "div", self.html_content)
@@ -101,7 +109,7 @@ class GoogleContentWithImage(GoogleContentObject):
             
 
 class GoogleDoc:
-    def __init__(self, document: dict) -> None:
+    def __init__(self, document: dict, host: str) -> None:
         if document == {} or document == None:
             raise TypeError
 
@@ -114,11 +122,12 @@ class GoogleDoc:
         self.slug = convert_title_to_slug(self.title)
         # List of GoogleContentObject
         
-        self.data_obj = {"title": "", "dek": "", "by_lines": [], "main_content":"", "main_img": []}
+        self.data_obj = {"title": "", "dek": "", "by_lines": [], "main_content":"", "main_img": ""}
         # self.data_obj = ''
         self.extracted_data = []
         self.template = ''
         self.formatted_content = ''
+        self.host = host
     
     def get_obj_type(self, obj: dict):
         if "sectionBreak" in obj:
@@ -163,29 +172,51 @@ class GoogleDoc:
         data = []
         for section in self.content:
             temp = self.get_obj_type(section)
-            if temp != None:
+
+            if temp:
                 temp.build_content()
-                data.append(temp)
+                if temp.html_content != None:
+                    data.append(temp)
 
         self.extracted_data = data
         if len(data) < 7:
             raise IndexError("Data is too short to be extracted")
+        
         self.data_obj['main_img'] = data[0].html_content
         self.data_obj['title'] = html_change_wrapper_tag("p","h1",data[1].html_content) 
         self.data_obj['dek'] = html_change_wrapper_tag("p","h2",data[2].html_content) 
         self.data_obj['by_lines'] = [ html_change_wrapper_tag("p","h4",x.html_content) for x in data[3:5]]
         self.data_obj['main_content'] = data[5:]
-    
-    def load_template(self, template: str):
-        self.template = template
 
-    def format_with_template():
-        pass
     
-    def write_to_html(self):
-        path = f'assets/prod/{self.slug}.html'
-        # print(self.data_obj)
-        f = open(path, "w")
-        f.write(self.formatted_content)
-        f.close()
+    def load_template(self, path: str, template: Template = None) -> None:
+        if template != None:
+            self.template = template
+        elif path != None or path != "": 
+            self.template = Template(path)
+                
+
+    def format_with_template(self) -> None:
+        dek = extract_content_from_tag(self.data_obj['dek'], 'span')
+        
+        self.template.replace_content('<---TITLE--->', self.data_obj['title'])
+
+        self.template.replace_content('<---DEK--->', dek)
+
+        inline_img_src = extract_content_from_tag( self.data_obj['main_img'], 'img')
+        self.template.replace_content('<---OGIMG--->', f"{self.host}/assets/{self.slug}/{inline_img_src[2:]}")
+        
+        print(self.data_obj["by_lines"])
+        for i in range(2):
+            self.template.replace_content(f'<---BY_LINE_{i + 1}--->', self.data_obj["by_lines"][i])
+
+        main_contents = "\n".join(x.html_content for x in self.data_obj['main_content'])
+
+        self.template.replace_content('<---CONTENT--->', main_contents)
+
+        self.template.replace_content('<---INLINE_IMG--->', f"./assets/{self.slug}/{inline_img_src}")
+
+
+    def write_to_file(self):
+        self.template.write_to_file(self.slug)
 

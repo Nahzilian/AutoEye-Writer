@@ -1,5 +1,6 @@
 import requests
 import os
+from bs4 import BeautifulSoup
 
 special_char = {
     "&": "&amp;",
@@ -48,3 +49,12 @@ def html_change_wrapper_tag(target: str, new_tag: str, line: str):
     new_line = line.replace(f"<{target}", f"<{new_tag}")
     new_line = new_line.replace(f"</{target}>", f"</{new_tag}>")
     return new_line
+
+def extract_content_from_tag(content: str, tag):
+    soup = BeautifulSoup(content, 'html.parser')
+    if tag == "img":
+        imgs = soup.find_all(tag)
+        return imgs[0]['src']
+    else:
+        tags = soup.find_all(tag)
+        return tags[0].text.strip()
