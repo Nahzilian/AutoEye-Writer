@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,700&family=Libre+Baskerville:ital@1&display=swap');
+
+body {
+    background-color: #010f2c;
+    color: white;
+}
+
+.header {
+    height: 200px;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 50px;
+
+    flex-direction: column;
+}
+
+.custom-card {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.custom-card img {
+    opacity: 0.9;
+    background-color: white;
+
+}
+
+.custom-card img:hover {
+    box-shadow: 0px 0px 400px 41px rgba(255, 255, 255, 0.486);
+    -webkit-box-shadow: 0px 0px 400px 41px rgba(255,255,255,0.486);
+    -moz-box-shadow: 0px 0px 400px 41px rgba(255,255,255,0.486);
+}
+
+.outer-wrapper {
+    position: relative; 
+}
+
+.custom-card .outer-wrapper:hover{
+    background-color: white;
+}
+
+.custom-card .size-sm{
+    max-width: 200px;
+}
+
+.custom-card .size-md{
+    max-width: 300px;
+}
+
+.custom-card a {
+    text-decoration: none;
+}
+
+.article-title {
+    height: 0px;
+    opacity: 0;
+    background-color: #EAE5E7;
+    width: 100%;
+    padding: 15px;
+    color:black;
+    transition: height 1s, opacity 2s;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+
+.outer-wrapper:hover .article-title {
+    height: 150px;
+    opacity: 1;
+    z-index: 10;
+}
+
+@media screen and (max-width: 992px) {
+    .custom-card {
+        gap: 10px;
+    }
+}
+    
