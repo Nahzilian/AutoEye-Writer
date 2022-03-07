@@ -42,26 +42,29 @@ class Image:
         """
         This should be able to differentiate between 2 types of image
         """
-        embedded_obj = img.get(f'{self.img_type}ObjectProperties').get('embeddedObject')
+        obj_props: dict = img.get(f'{self.img_type}ObjectProperties')
+        embedded_obj = obj_props.get('embeddedObject')
         self.id = img.get('objectId')
         name = f"{self.img_type}-{self.id}"
-        img_name = download(embedded_obj.get("imageProperties").get("contentUri"), name)
+        img_name = download(embedded_obj.get("imageProperties").get("contentUri"), name, file_slug)
 
         self.src= f"./assets/{file_slug}/{img_name}"
         
         # position
         if self.img_type == "positioned":
-            left_offset = embedded_obj.get('positioning').get('leftOffset')
-            width = img.get('size').get('width')
+            left_offset = obj_props.get('positioning').get('leftOffset')
+            width = embedded_obj.get('size').get('width')
             self.pos = self.get_img_pos(left_offset, width)
+        else: 
+            self.pos = 'center'
 
         self.slug = file_slug
-        # download img?
+        
 
 
     def html_format(self, is_target: bool = True) -> str:
         target = ''
         if is_target:
-            target = "target = 'blank'"
+            target = "target='blank'"
         return f"<img src='{self.src}' alt='{self.slug}' class='float-{self.pos}' {target}>"
         

@@ -1,0 +1,41 @@
+/**
+This stylesheet will be used to generate some common class
+*/
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,700&family=Libre+Baskerville:ital@1&display=swap');
+
+body {
+    scroll-behavior: smooth;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: -100px;
+    right: 50px;
+    
+    width: 50px;
+    height: 50px;
+    transition: 1s;
+    display: grid;
+    place-items: center;
+}
+
+@media screen and (max-width: 767px) {
+    .scroll-to-top {
+        right: 20px;
+    }
+}
+
+.loader {
+    z-index: 1031;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    transition: 1s;
+}
+
+.loader .row {
+    gap: 10px
+}

@@ -14,10 +14,13 @@ def main() -> None:
     
     # Assign with new class (GoogleDoc)
     # print(test_file)
-    document = GoogleDoc(test_file)
-    
+
+    main_url = "https://thebodyissue.theeyeopener.com"
+    document = GoogleDoc(test_file, main_url)
+    document.load_template('assets/templates/article.html')
     document.extract()
-    document.write_to_html()
+    document.format_with_template()
+    document.write_to_file()
 
 
 if __name__ == '__main__':
