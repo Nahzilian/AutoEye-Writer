@@ -1,0 +1,31 @@
+body {
+    font-family: 'Cambria';
+}
+
+.article-bylines {
+    background-image: url('../assets/nameplate.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #ffb900;
+    font-family: 'Libre Baskerville', serif;
+}
+
+@media screen and (max-width: 764px) {
+    .article-bylines {
+        background-image: url('../assets/nameplate_mobile.png');
+    }
+}
+
+.article-header {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: bold;
+}
+
+.article-title {
+    color: #860F05;
+}

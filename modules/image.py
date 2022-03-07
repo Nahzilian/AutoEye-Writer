@@ -48,7 +48,7 @@ class Image:
         name = f"{self.img_type}-{self.id}"
         img_name = download(embedded_obj.get("imageProperties").get("contentUri"), name, file_slug)
 
-        self.src= f"./assets/{file_slug}/{img_name}"
+        self.src= f"./assets/{file_slug}{img_name}"
         
         # position
         if self.img_type == "positioned":
@@ -66,5 +66,5 @@ class Image:
         target = ''
         if is_target:
             target = "target='blank'"
-        return f"<img src='{self.src}' alt='{self.slug}' class='float-{self.pos}' {target}>"
+        return f"<img width='150' src='{self.src}' alt='{self.slug}' class='float-{self.pos}' {target}>"
         

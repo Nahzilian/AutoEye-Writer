@@ -198,13 +198,14 @@ class GoogleDoc:
 
     def format_with_template(self) -> None:
         dek = extract_content_from_tag(self.data_obj['dek'], 'span')
+        title = extract_content_from_tag(self.data_obj['title'], 'span')
         
-        self.template.replace_content('<---TITLE--->', self.data_obj['title'])
+        self.template.replace_content('<---TITLE--->', title)
 
         self.template.replace_content('<---DEK--->', dek)
 
         inline_img_src = extract_content_from_tag( self.data_obj['main_img'], 'img')
-        self.template.replace_content('<---OGIMG--->', f"{self.host}/assets/{self.slug}/{inline_img_src[2:]}")
+        self.template.replace_content('<---OGIMG--->', f"{self.host}/{inline_img_src[2:]}")
         
         print(self.data_obj["by_lines"])
         for i in range(2):
@@ -214,7 +215,7 @@ class GoogleDoc:
 
         self.template.replace_content('<---CONTENT--->', main_contents)
 
-        self.template.replace_content('<---INLINE_IMG--->', f"./assets/{self.slug}/{inline_img_src}")
+        self.template.replace_content('<---INLINE_IMG--->', inline_img_src)
 
 
     def write_to_file(self):

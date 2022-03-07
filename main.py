@@ -4,8 +4,16 @@ from modules.google_func import get_files_id, get_google_cred, get_file_by_id
 
 from modules.google_object import GoogleDoc
 
+from workers.move_files import copy_template
+
 def main() -> None:
+    
+    copy_template()
+    
+    
     cred: Credentials = get_google_cred()
+    
+    
     files = get_files_id(cred)
     # print(files[0]) #Print first file ID (only need 1)
     # Get file by id
@@ -21,6 +29,7 @@ def main() -> None:
     document.extract()
     document.format_with_template()
     document.write_to_file()
+
 
 
 if __name__ == '__main__':

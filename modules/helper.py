@@ -29,10 +29,10 @@ def download(url, name, slug = '') -> str:
     if not is_exist:
         print("File path not exist. Creating new")
         os.makedirs(file_path)
-
-    file_name = file_path + f'/{name}.'+ content_type.replace('image/', '')
+    f_name_temp = f'/{name}.'+ content_type.replace('image/', '')
+    file_name = file_path + f_name_temp
     open(file_name, 'wb').write(r.content)
-    return file_name
+    return f_name_temp
 
 def html_font_class(font_name: str):
     font = "-".join(font_name.lower().strip().split(' '))
